@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "diva-pypi",
+  "private_key_id": "3aa345f82143f4318b8dd069e237ae2e7e143bc2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDKX7X0TZoj/WK5\nz/XM+jcUON1Ga0aFpcWIjhy3OS3AQCe7n9WXpusPEX7Bjfill+TLGcQutdpaJnb6\nH/ZplE7+ocnZwPihZzf/z47Q3AFwZXwZP2UQIhD5I1BijBzPsJxIZy63JXPSplFu\nZZuamUnVnK/oUMBHOwELgr/oXJ7ZqbDDREscoWCu34Xf9mmh0wcyj0RYYIJFm6P/\nBaRYaeiLZyDyEyYguANt9f/aX84yThP2n5BcvOCdsV91ax06p1xKzjgzSpZ9kcM6\nHHRysfgYFIoJTuwGoHH2C6xfSOcGLSAhtqNj0SwyCWeJOqTesxs+nN8e9WrhDqnW\nLyXfyiaTAgMBAAECggEAAmVqibrg+xaFFxD0mZCW0tM3Yq5Y5bKeZXE9oO3Z88aB\nj3gA1WbSHdTqtiVds/yK9vBA7q/VTk6RhCvhYOeFINkB0Fhb1f7WVmrvXMGRZVut\n2N322yrxbPd+DLR0+Lh3DFQb0VAysqXJieoxgncgykpd21ke9X+D8R0TvyL2H3Xh\nkYdYVFyZYdpF+zNwsbl/MAlQrxyxIgwaUZwLMOhl/L8bjgSU15b0sTxmFy6aNuRv\nTiia9AYQ0oVUCkwJAms1YaYcrwB10EaiY0k6BcSlKZ65LaDr5fOI6aZa9SZfgqbs\nMDzLktr4DUHzQ2stcbHuQDW4QelQ9dJq4iL4TIbOkQKBgQD1WIh5TCFtXSI24CEJ\negRIqLiIIq2gOQYskz59ZaH0Szd/nzYFsus7595OqUxDVPDS5d9x7I4gSGsKrAiY\nqYM2kV5JdfbVLNa4aTQz/vi6/U5EPGnBVvXuthyfBxSkJ7G8g+c9pAC8GYXLHq4z\n/2Sz1oXdyl3xayWQqMDK7slE6QKBgQDTKXdBBb+bCuXF2uFP74ZfBOf7jg7FMkSP\ng7uwJZQZooBINQi6qMsNwZtLNflXKOS/SsJXMd24jT3ffzcdPZpE/oVvowFqTFya\n4G4cBSUZXsGX93ZyzOKOqv1B+LnvaTjM5bOctr6eoY1T8XQxAVlm3HSczgucSsvg\nRqDsn0uSGwKBgQDgx0MJtmkttFUjZ4Z9EzAXjZS7DOJ716LDdgebhWCy27K2Fxy8\nbea8lLuE3/DCA3E8F2T3EB5Kj26acXDSxQM1HEwBC7WgKxtyCtjMBn7FekuZkqvl\neZGKKYjhXfBYURGywDo8rCQMMWn15V7+vq75YMJ2p/AXve3FsgYoJkt5+QKBgDpx\nwKMLj0O/WWdQtInmVr+X4QlcATSNPDKomFshm4MY2f6iRx86trDBBFVlw/Reyikz\n7OQrVh3NYfGpCT0bnsY32ADVEgA00HDBa1hwCBukgVqpUGxnztED/IK07+mWqvTz\nIqpeXhYTysUQEEO8Bt2UaOY5lTcV8KXLhqDXWhg/AoGARVvKXZbYiw/it7fMWv+P\nisiH4adycPi3f/5GsEkGy3xhNyE/UGf06NyhGPOw4eQ3WroIcRa8nRkjooHkGGup\nLYwX9+jc7VUiZ/Q4hUVRdXHqoF+lxVV26+VOwf0WnuRF2pJP8G1art9dgn9cwyRs\n8rAanl1Dz2cERwdHvvdrVCM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "admin-diva@diva-pypi.iam.gserviceaccount.com",
+  "client_id": "107904045565723902386",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/admin-diva%40diva-pypi.iam.gserviceaccount.com"
+}
