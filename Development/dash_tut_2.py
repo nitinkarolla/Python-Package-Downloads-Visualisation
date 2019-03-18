@@ -24,5 +24,7 @@ def compute_amount(hours, rate):
 def compute_amount(amount):
     return float(amount) * 7
 
+app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
+
 if __name__ == '__main__':
     app.run_server()

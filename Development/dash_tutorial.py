@@ -1,43 +1,48 @@
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
+import pandas as pd
+import plotly.graph_objs as go
 
-from pandas_datareader import data as web
-from datetime import datetime as dt
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash('Hello World')
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+df = pd.read_csv(
+    'https://gist.githubusercontent.com/chriddyp/' +
+    '5d1ea79569ed194d432e56108a04d188/raw/' +
+    'a9f9e8076b837d541398e999dcbac2b2826a81f8/'+
+    'gdp-life-exp-2007.csv')
+
 
 app.layout = html.Div([
-    dcc.Dropdown(
-        id='my-dropdown',
-        options=[
-            {'label': 'Coke', 'value': 'COKE'},
-            {'label': 'Tesla', 'value': 'TSLA'},
-            {'label': 'Apple', 'value': 'AAPL'}
-        ],
-        value='COKE'
-    ),
-    dcc.Graph(id='my-graph')
-], style={'width': '500'})
-
-@app.callback(Output('my-graph', 'figure'), [Input('my-dropdown', 'value')])
-def update_graph(selected_dropdown_value):
-    df = web.DataReader(
-        selected_dropdown_value,
-        'google',
-        dt(2017, 1, 1),
-        dt.now()
+    dcc.Graph(
+        id='life-exp-vs-gdp',
+        figure={
+            'data': [
+                go.Scatter(
+                    x=df[df['continent'] == i]['gdp per capita'],
+                    y=df[df['continent'] == i]['life expectancy'],
+                    text=df[df['continent'] == i]['country'],
+                    mode='markers',
+                    opacity=0.7,
+                    marker={
+                        'size': 15,
+                        'line': {'width': 0.5, 'color': 'white'}
+                    },
+                    name=i
+                ) for i in df.continent.unique()
+            ],
+            'layout': go.Layout(
+                xaxis={'type': 'log', 'title': 'GDP Per Capita'},
+                yaxis={'title': 'Life Expectancy'},
+                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                legend={'x': 0, 'y': 1},
+                hovermode='closest'
+            )
+        }
     )
-    return {
-        'data': [{
-            'x': df.index,
-            'y': df.Close
-        }],
-        'layout': {'margin': {'l': 40, 'r': 0, 't': 20, 'b': 30}}
-    }
-
-app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
+])
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)

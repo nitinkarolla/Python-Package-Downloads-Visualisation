@@ -3,7 +3,7 @@ from google.oauth2 import service_account
 import pandas as pd
 
 credentials = service_account.Credentials.from_service_account_file(
-    'E:\Semester - 2\DIVA\Project\Diva-pypi-3aa345f82143.json')
+    'E:\Semester-2\DIVA\Project\Diva-pypi-3aa345f82143.json')
 
 project_id = 'diva-pypi'
 client = bigquery.Client(credentials= credentials,project=project_id)
