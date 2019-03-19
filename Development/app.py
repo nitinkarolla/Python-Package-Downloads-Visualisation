@@ -39,6 +39,7 @@ aboutus = html.Div('about us')
 
 
 
+## No Page Error
 noPage = html.Div([  # 404
 
     html.P(["404 Page not found"])
@@ -57,7 +58,7 @@ tabs_styles = {
 tab_style = {
     #'borderBottom': '1px solid #d6d6d6',
     'padding': '6px',
-    'fontWeight': 'bold'
+    #'fontWeight': 'bold'
 }
 
 tab_selected_style = {
@@ -120,12 +121,12 @@ def render_content(tab):
 # # # # # # # # #
 # detail the way that external_css and external_js work and link to alternative method locally hosted
 # # # # # # # # #
-external_css = [#"https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css",
+external_css = [# "https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css",
                 # "https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
                 # "//fonts.googleapis.com/css?family=Raleway:400,300,600",
                 # "https://codepen.io/bcd/pen/KQrXdb.css",
                 # "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
-                "https://codepen.io/chriddyp/pen/bWLwgP.css"
+                 "https://codepen.io/chriddyp/pen/bWLwgP.css"
                 ]
 
 for css in external_css:
