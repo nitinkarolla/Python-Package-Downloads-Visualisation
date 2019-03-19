@@ -12,13 +12,34 @@ server = app.server
 
 #### TAB1 ######
 ##################################
-main = html.Div('main')
+main = html.Div([
+            html.Div(
+                
+                [html.Div('Rate of Download', style = {'width' : '29%'} ),
+                    html.Div('No of packages Downloaded',style = {'width' : '29%'}),
+                    html.Div('No of distinct packages', style = {'width' : '29%'})],
+                    style = {'margin': '10'},
+                    className = 'row'
+            )
+], className = 'MainTab')
+
+
+
+
+
+
+
+
+
+
+
 
 
 #### TAB2 ######
 ##################################
 
-historical = html.Div('historical')
+historical = html.Div('historical',
+    className = 'Hist-Tab')
 
 
 #### TAB3 ######
