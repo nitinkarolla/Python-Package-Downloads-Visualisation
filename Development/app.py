@@ -26,10 +26,10 @@ main =  html.Div([html.Br(),
             html.Div(id = 'count_download', 
                 style = {'width' : '29%', 'height': '90','backgroundColor' : '#5108af', 'marginLeft' : '2%'}, className = 'column'),
 
-            html.Div('No of packages Downloaded'
-                ,style = {'width' : '29%',  'height': '90','backgroundColor' : '#0bbf4d'}, className = 'column'),
+            html.Div(id = 'rate_download', 
+                style = {'width' : '29%',  'height': '90','backgroundColor' : '#0bbf4d'}, className = 'column'),
 
-            html.Div('No of distinct packages'
+            html.Div(id = 'uniq_package'
                 , style = {'width' : '29%', 'height': '90','backgroundColor' : '#edc423'}, className = 'column'),
             
             dcc.Interval(
@@ -142,35 +142,61 @@ def render_content(tab):
 ###########################
 ########### TAB1 #################
 ###########################
+
 #Initiation for live data
 start_time = pd.Timestamp('2019-02-25 00:12:00')
 time = start_time
 downloads = 0
-packages = []
-
 
 @app.callback(Output('count_download', 'children'),
               [Input('interval-component', 'n_intervals')])
 def update_metrics(n):
     global time
     global downloads
-    global packages
     old_time = time
     new_time = time + pd.Timedelta(seconds = 1)
     temp_data = data[(data['timestamp'] > old_time) & (data['timestamp'] <= new_time)]
     downloads += temp_data.shape[0]
-    rate = temp_data.shape[0]/2
-    packages.extend(list(set(temp_data['module'])))
-    packages = list(set(packages))
-    #print('Unique Packages :', len(packages))
-    #print("Downloads : ", downloads)
-    #print("Rate : ", rate)
     time = new_time
     return [html.H4(str(downloads), style = {'color': 'white', 'textAlign': 'center' }),
                     html.P("Number of Downloads", style = {'textAlign': 'center', 'color' : 'white'})
                     ]
 
+#Initiation for live data
+start_time = pd.Timestamp('2019-02-25 00:12:00')
+time2 = start_time
 
+@app.callback(Output('rate_download', 'children'),
+              [Input('interval-component', 'n_intervals')])
+def update_metrics2(n):
+    global time2
+    old_time = time2
+    new_time = time2 + pd.Timedelta(seconds = 1)
+    temp_data = data[(data['timestamp'] > old_time) & (data['timestamp'] <= new_time)]
+    rate = temp_data.shape[0]
+    time2 = new_time
+    return [html.H4(str(rate), style = {'color': 'white', 'textAlign': 'center' }),
+                    html.P("Rate of Download (pkgs/sec)", style = {'textAlign': 'center', 'color' : 'white'})
+                    ]
+
+#Initiation for live data
+start_time = pd.Timestamp('2019-02-25 00:12:00')
+time3 = start_time
+packages = []
+@app.callback(Output('uniq_package', 'children'),
+              [Input('interval-component', 'n_intervals')])
+def update_metrics3(n):
+    global time3
+    global packages
+    old_time = time3
+    new_time = time3 + pd.Timedelta(seconds = 1)
+    temp_data = data[(data['timestamp'] > old_time) & (data['timestamp'] <= new_time)]
+    packages.extend(list(set(temp_data['module'])))
+    packages = list(set(packages))
+    time3 = new_time
+    return [html.H4(str(len(packages)), style = {'color': 'white', 'textAlign': 'center' }),
+                    html.P("No of Unique Modules Downloaded", style = {'textAlign': 'center', 'color' : 'white'})
+                    ]
 
 # # # # # # # # #
 # detail the way that external_css and external_js work and link to alternative method locally hosted
