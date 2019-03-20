@@ -6,20 +6,36 @@ from dash.dependencies import Input, Output
 
 from components.header import Header
 
+import time as t
+import ast
+import pandas as pd
+
+
+#Loading the data
+data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/sample_data.csv")
+data['module'] = data['file'].apply(lambda x : ast.literal_eval(x)['project'])
+data['timestamp'] = pd.to_datetime(data.timestamp)
 
 app = dash.Dash(__name__)
 server = app.server
+app.config.suppress_callback_exceptions = True
 
 #### TAB1 ######
 ##################################
-main = html.Div([
-            html.Div(
-                
-                [html.Div('Rate of Download', style = {'width' : '29%'} ),
-                    html.Div('No of packages Downloaded',style = {'width' : '29%'}),
-                    html.Div('No of distinct packages', style = {'width' : '29%'})],
-                    style = {'margin': '10'},
-                    className = 'row'
+main =  html.Div([html.Br(),
+            html.Div(id = 'count_download', 
+                style = {'width' : '29%', 'height': '90','backgroundColor' : '#5108af', 'marginLeft' : '2%'}, className = 'column'),
+
+            html.Div('No of packages Downloaded'
+                ,style = {'width' : '29%',  'height': '90','backgroundColor' : '#0bbf4d'}, className = 'column'),
+
+            html.Div('No of distinct packages'
+                , style = {'width' : '29%', 'height': '90','backgroundColor' : '#edc423'}, className = 'column'),
+            
+            dcc.Interval(
+                id='interval-component',
+                interval=1*1000, # in milliseconds
+                n_intervals=0
             )
 ], className = 'MainTab')
 
@@ -92,6 +108,7 @@ tab_selected_style = {
 
 app.layout = html.Div([
     Header(),
+    
     dcc.Tabs(id="tabs-styled-with-inline", value='main', children=[
         dcc.Tab(label='Live Data', value='main', style=tab_style, selected_style=tab_selected_style),
         dcc.Tab(label='Historical Data', value='historical', style=tab_style, selected_style=tab_selected_style),
@@ -104,23 +121,7 @@ app.layout = html.Div([
 
 # Update page
 # # # # # # # # #
-# detail in depth what the callback below is doing
-# # # # # # # # #
-# @app.callback(dash.dependencies.Output('page-content', 'children'),
-#               [dash.dependencies.Input('url', 'pathname')])
-# def display_page(pathname):
-#     if pathname == '/' or pathname == '/main':
-#         return main
-#     elif pathname == '/historical':
-#         return historical
-#     elif pathname == '/trends':
-#         return trends
-#     elif pathname == '/ref':
-#         return ref
-#     elif pathname == '/aboutus':
-#         return aboutus
-#     else:
-#         return noPage
+
 
 @app.callback(Output('tabs-content-inline', 'children'),
               [Input('tabs-styled-with-inline', 'value')])
@@ -137,6 +138,38 @@ def render_content(tab):
         return aboutus
     else:
         return noPage
+
+###########################
+########### TAB1 #################
+###########################
+#Initiation for live data
+start_time = pd.Timestamp('2019-02-25 00:12:00')
+time = start_time
+downloads = 0
+packages = []
+
+
+@app.callback(Output('count_download', 'children'),
+              [Input('interval-component', 'n_intervals')])
+def update_metrics(n):
+    global time
+    global downloads
+    global packages
+    old_time = time
+    new_time = time + pd.Timedelta(seconds = 1)
+    temp_data = data[(data['timestamp'] > old_time) & (data['timestamp'] <= new_time)]
+    downloads += temp_data.shape[0]
+    rate = temp_data.shape[0]/2
+    packages.extend(list(set(temp_data['module'])))
+    packages = list(set(packages))
+    #print('Unique Packages :', len(packages))
+    #print("Downloads : ", downloads)
+    #print("Rate : ", rate)
+    time = new_time
+    return [html.H4(str(downloads), style = {'color': 'white', 'textAlign': 'center' }),
+                    html.P("Number of Downloads", style = {'textAlign': 'center', 'color' : 'white'})
+                    ]
+
 
 
 # # # # # # # # #
@@ -160,4 +193,5 @@ for css in external_css:
 #     app.scripts.append_script({"external_url": js})
 
 if __name__ == '__main__':
+    
     app.run_server(debug=True)
