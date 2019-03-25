@@ -1,57 +1,73 @@
-import plotly.graph_objs as go
-import plotly.plotly as py
-import pandas as pd
-import plotly 
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
 
-plotly.tools.set_credentials_file(username='nrk60', api_key='33dDfH0GlJaksOCZaRzR')
+import pandas as pd
+import plotly.graph_objs as go
 
 df = pd.read_csv("E:\Semester-2\DIVA\Project\Development\sample_data.csv")
+dfcountry = pd.read_csv('countryMap.txt',sep='\t')
 
-counts = pd.DataFrame(df['country_code'].value_counts())
+df = df.merge(dfcountry,how='inner',left_on=['country_code'],right_on=['2let'])
 
-data = [go.Choropleth(
-    locations = counts.index,
-    z = counts['country_code'],
-    text = counts.index,
-    colorscale = [
-        [0, "rgb(5, 10, 172)"],
-        [0.35, "rgb(40, 60, 190)"],
-        [0.5, "rgb(70, 100, 245)"],
-        [0.6, "rgb(90, 120, 245)"],
-        [0.7, "rgb(106, 137, 247)"],
-        [1, "rgb(220, 220, 220)"]
-    ],
-    autocolorscale = False,
-    reversescale = True,
-    marker = go.choropleth.Marker(
-        line = go.choropleth.marker.Line(
-            color = 'rgb(180,180,180)',
-            width = 0.5
-        )),
-    colorbar = go.choropleth.ColorBar(
-        tickprefix = '$',
-        title = 'GDP<br>Billions US$'),
-)]
+new = df.groupby(['Countrylet', '3let']).size().reset_index(name= 'size')
 
-layout = go.Layout(
-    title = go.layout.Title(
-        text = '2014 Global GDP'
-    ),
-    geo = go.layout.Geo(
-        showframe = False,
-        showcoastlines = False,
-        projection = go.layout.geo.Projection(
-            type = 'equirectangular'
-        )
-    ),
-    annotations = [go.layout.Annotation(
-        x = 0.55,
-        y = 0.1,
-        xref = 'paper',
-        yref = 'paper',
-        showarrow = False
-    )]
-)
 
-fig = go.Figure(data = data, layout = layout)
-py.iplot(fig, filename = 'd3-world-map')
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+app.layout = html.Div(
+    dcc.Graph(
+    figure = go.Figure(
+        data =  [go.Choropleth(
+            locations = new['3let'],
+            z = new['size'],
+            text = new['Countrylet'],
+            colorscale = 'Viridis',
+            autocolorscale = False,
+            reversescale = True,
+
+            marker = go.choropleth.Marker(
+                line = go.choropleth.marker.Line(
+                    color = 'rgb(180,180,180)',
+                    width = 0.7
+                )),
+            colorbar = go.choropleth.ColorBar(
+                tickprefix = '#',
+                title = 'Number of Downloads',
+                thickness= 10),
+            )],
+        layout = go.Layout(
+            title = go.layout.Title(
+                text = '# Package Downloads'
+            ),
+            geo = go.layout.Geo(
+                showframe = False,
+                showcoastlines = False,
+
+                showcountries = True,
+                projection = go.layout.geo.Projection(
+                    type = 'equirectangular'
+                )
+            ),
+            annotations = [go.layout.Annotation(
+                x = 0.55,
+                y = 0.1,
+                xref = 'paper',
+                yref = 'paper',
+                showarrow = False
+            )]
+            )
+        
+    
+    ), id='graph-with-slider'
+
+))
+
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
+
+
