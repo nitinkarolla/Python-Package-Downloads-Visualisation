@@ -13,14 +13,14 @@ import pandas as pd
 import squarify
 
 from datetime import datetime as dt
-
+    
 
 
 ###################################
 ########Loading the data
 ###################################
 
-data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/sample_data.csv")
+data = pd.read_csv("sample_data.csv")
 data['module'] = data['file'].apply(lambda x : ast.literal_eval(x)['project'])
 data['timestamp'] = pd.to_datetime(data.timestamp)
 dfcountry = pd.read_csv('countryMap.txt',sep='\t')
@@ -78,16 +78,16 @@ main =  html.Div([
             ], style = {'height' : '140px'}),
             
         html.Div([html.Div([html.Div(html.H5("Number of Downloads ", style = {'color': 'white', 'marginTop': '0px', 'marginLeft': '10px'})
-                            , style = {'backgroundColor' : '#4682B4'}),
+                            , style = {'backgroundColor' : '#225ea8'}),
                 
                             html.Div(dcc.Graph(id = 'world_map'))],
-                            style = {'width': '45%', 'marginLeft':'3%', 'border': '1px solid #9b9b9b',  
+                            style = {'width': '45%', 'marginLeft':'3%', #'border': '1px solid #9b9b9b',  
                                     'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column'),
                 html.Div([html.Div(html.H5("Download Rate", style = {'color': 'white', 'marginTop': '0px', 'marginLeft': '10px'})
-                    , style = {'backgroundColor' : '#4682B4'}),
+                    , style = {'backgroundColor' : '#225ea8'}),
                 
                         html.Div(dcc.Graph(id = 'world_map_rate'))],
-                        style = {'width': '45%', 'marginLeft':'3%', 'border': '1px solid #9b9b9b',  
+                        style = {'width': '45%', 'marginLeft':'3%', #'border': '1px solid #9b9b9b',  
                                 'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column')
         
         ], className = 'row'),
@@ -95,25 +95,21 @@ main =  html.Div([
         #html.Hr(),       
 
         html.Div([html.Div([html.Div(html.H5("Download Rate (pkgs/sec)", style = {'color': 'white', 'marginTop': '0px', 'marginLeft': '10px'})
-                            , style = {'backgroundColor' : '#4682B4'}),
+                            , style = {'backgroundColor' : '#225ea8'}),
                             html.Div(dcc.Graph(id = 'pkg_rate'))]
-                , style = {'width': '45%', 'marginLeft':'3%', 'border': '1px solid #9b9b9b',  
+                , style = {'width': '45%', 'marginLeft':'3%', #'border': '1px solid #9b9b9b',  
                                     'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column'),
                 
                  html.Div([html.Div(html.H5("Top 10 Packages (#/sec)", style = {'color': 'white', 'marginTop': '0px', 'marginLeft': '10px'})
-                            , style = {'backgroundColor' : '#4682B4'}),
+                            , style = {'backgroundColor' : '#225ea8'}),
                             html.Div(dcc.Graph(id = 'treemaps'))] 
-                ,style = {'width': '45%', 'marginLeft':'3%', 'border': '1px solid #9b9b9b',  
+                ,style = {'width': '45%', 'marginLeft':'3%', #'border': '1px solid #9b9b9b',  
                                 'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column')
-        ], className = 'row'),
+        ], className = 'row')
 
             
-            dcc.Interval(
-                id='interval-component',
-                interval=1*1000, # in milliseconds
-                n_intervals=0
-            )
-], id="mainDiv")
+            
+], id="mainDiv", style = {"backgroundColor":'#f2f2f2', "paddingBottom":'7%'})
 
 
 
@@ -122,7 +118,7 @@ main =  html.Div([
 ##################################
 
 ###Reading the data for TAB2
-hist_data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/summ.csv")
+hist_data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/data/summ.csv")
 
 
 historical = html.Div([
@@ -164,25 +160,28 @@ historical = html.Div([
     html.Div([
         html.P("Select the hour of the day:"),
         html.Div(dcc.Slider(id='slider_hour',
-        marks={i: '{}'.format (str(i)+ ': 00') for i in range(24)},
-        min = -1,
-        max=23,
-        value=-1,
-        step=1,
-        updatemode='drag' )         
-    , className = 'column')],
+            marks={i: '{}'.format (str(i)+ ': 00') for i in range(24)},
+            min = -1,
+            max=23,
+            value=-1,
+            step=1,
+            updatemode='drag' )         
+        , className = 'column')],
     className = 'row', style = {'marginLeft': '8%', 'width': '75%'}),
     html.Br(),
+    html.Div([
+        html.Div(dcc.Graph(id = 'tab2_map'), style = {'width': '55%', # 'border': '1px solid #9b9b9b',  
+                                    'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column'),
 
-    html.Div(dcc.Graph(id = 'tab2_map'), style = {'width': '60%', 'marginTop': '3%'}),
-
-    html.Br(),
-
-    html.Br(),
-
-    html.Div(dcc.Graph(id = 'trend_line'), style = {'width': '60%', 'marginTop': '3%'})
+        html.Div(dcc.Graph(id = 'cate_plot'), style = {'width': '40%', # 'border': '1px solid #9b9b9b',  
+                                    'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column')
     
-],className = 'Hist-Tab')
+    ], style = {'margin': '3%'}, className = 'row'),
+
+    html.Div(dcc.Graph(id = 'trend_line'), style = {'width': '60%', 'marginLeft': '20%', #'border': '1px solid #9b9b9b',  
+                                    'boxShadow': '3px 3px 3px 3px #d1d1d1' })
+    
+],className = 'Hist-Tab', style = {"backgroundColor":'#f2f2f2', "paddingBottom":'7%'})
 
 
 ##################################
@@ -248,12 +247,12 @@ app.layout = html.Div([
     dcc.Tabs(id="tabs-styled-with-inline", value='main', children=[
         dcc.Tab(label='Live Data', value='main', style=tab_style, selected_style=tab_selected_style),
         dcc.Tab(label='Historical Data', value='historical', style=tab_style, selected_style=tab_selected_style),
-        dcc.Tab(label='Interesting Trends', value='trends', style=tab_style, selected_style=tab_selected_style),
+        #dcc.Tab(label='Interesting Trends', value='trends', style=tab_style, selected_style=tab_selected_style),
         dcc.Tab(label='References', value='ref', style=tab_style, selected_style=tab_selected_style),
-        dcc.Tab(label='About Us', value='aboutus', style=tab_style, selected_style=tab_selected_style),
+        dcc.Tab(label='Team', value='aboutus', style=tab_style, selected_style=tab_selected_style),
     ], style=tabs_styles),
     html.Div(id='tabs-content-inline')
-])
+], style = {'width': '90%','marginLeft':'5%', 'boxShadow': '3px 3px 3px 3px #d1d1d1'})
 
 # Update page
 # # # # # # # # #
@@ -280,8 +279,14 @@ def render_content(tab):
 ############################################################################################################
 
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
+start_time = pd.Timestamp('2019-03-25 09:00:00')
 time = start_time
+time2 = start_time
+time3 = start_time
+time4 = start_time
+time5 = start_time
+time6 = start_time
+time7 = start_time
 downloads = 0
 
 @app.callback(Output('count_download', 'children'),
@@ -299,8 +304,8 @@ def update_metrics(n):
                     ]
 
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
-time2 = start_time
+#start_time = pd.Timestamp('2019-02-25 00:12:00')
+#time2 = start_time
 
 @app.callback(Output('rate_download', 'children'),
               [Input('interval-component', 'n_intervals')])
@@ -316,8 +321,8 @@ def update_metrics2(n):
                     ]
 
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
-time3 = start_time
+#start_time = pd.Timestamp('2019-02-25 00:12:00')
+#time3 = start_time
 packages = []
 @app.callback(Output('uniq_package', 'children'),
               [Input('interval-component', 'n_intervals')])
@@ -335,8 +340,8 @@ def update_metrics3(n):
                     ]
 
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
-time4 = start_time
+#start_time = pd.Timestamp('2019-02-25 00:12:00')
+#time4 = start_time
 column_data = data.columns
 temp_df = pd.DataFrame(columns= column_data)
 @app.callback(Output('world_map', 'figure'),
@@ -375,7 +380,7 @@ def update_map(n):
                     ),
                 )],
             'layout' : go.Layout(
-                height = 400,
+                height = 350,
                 uirevision= 'temp',
                 margin =go.layout.Margin(
                             l=10,
@@ -408,8 +413,8 @@ def update_map(n):
             }
     
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
-time5 = start_time
+#start_time = pd.Timestamp('2019-02-25 00:12:00')
+#time5 = start_time
 @app.callback(Output('world_map_rate', 'figure'),
               [Input('interval-component', 'n_intervals')])
 def update_map2(n):
@@ -439,7 +444,7 @@ def update_map2(n):
                     len= 0.6),
                 )],
             'layout' : go.Layout(
-                height = 400,
+                height = 350,
                 uirevision= 'temp',
                 margin =go.layout.Margin(
                             l=10,
@@ -471,8 +476,8 @@ def update_map2(n):
 
 
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
-time6 = start_time
+#start_time = pd.Timestamp('2019-02-25 00:12:00')
+#time6 = start_time
 trend = [0] * 200
 @app.callback(Output('pkg_rate', 'figure'), [Input('interval-component', 'n_intervals')])
 def gen_package_rate(n):
@@ -494,7 +499,7 @@ def gen_package_rate(n):
     )
 
     layout = go.Layout(
-        height=450,
+        height=350,
         xaxis=dict(
             range=[0, 200],
             showgrid=False,
@@ -506,11 +511,11 @@ def gen_package_rate(n):
             title='Time Elapsed (sec)'
         ),
         yaxis=dict(
-            range=[0,200],
+            range=[0,2500],
             showline=False,
-            fixedrange=True,
-            zeroline=False,
-            nticks=max(6, round(trend[-1]/10))
+            fixedrange=False,
+            zeroline=False
+            #nticks=max(6, round(trend[-1]/10))
         ),
         uirevision= 'temp',
         margin =go.layout.Margin(
@@ -526,8 +531,8 @@ def gen_package_rate(n):
 
 
 #Initiation for live data
-start_time = pd.Timestamp('2019-02-25 00:12:00')
-time7 = start_time
+#start_time = pd.Timestamp('2019-02-25 00:12:00')
+
 @app.callback(Output('treemaps', 'figure'), [Input('interval-component', 'n_intervals')])
 def gen_tree_maps(n):
     global time7
@@ -589,7 +594,7 @@ def gen_tree_maps(n):
     )
             
     layout = dict(
-        #height=700, 
+        height=350, 
         #width=700,
         xaxis=dict(showgrid=False,zeroline=False),
         yaxis=dict(showgrid=False,zeroline=False),
@@ -598,10 +603,10 @@ def gen_tree_maps(n):
         hovermode='closest',
         uirevision= 'temp',
         margin =go.layout.Margin(
-                            l=50,
-                            r=40,
-                            b=50,
-                            t=80,
+                            l=150,
+                            r=150,
+                            b=35,
+                            t=50,
                             pad=10
                             ),
     )
@@ -674,7 +679,7 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
                 len= 0.6),
             )]
     layout = go.Layout(
-            height = 500,
+            height = 350,
             margin =go.layout.Margin(
                         l=10,
                         r=0,
@@ -706,7 +711,7 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
     figure = dict(data=data, layout=layout)
     return figure
 
-trend_data = pd.read_csv("E:\Semester-2\DIVA\Project\Development/trend.csv")
+trend_data = pd.read_csv("trend.csv")
 
 color_col = ['rgb(158,1,66)','rgb(213,62,79)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)',
 'rgb(230,245,152)','rgb(171,221,164)','rgb(102,194,165)','rgb(50,136,189)','rgb(94,79,162)']
@@ -735,7 +740,15 @@ def trend_figure(modules_dd):
     
     layout = dict(
         title='Trend Analyses of Packages',
-        scrollZoom = True,
+        height = 350,
+            margin =go.layout.Margin(
+                        l=50,
+                        r=20,
+                        b=30,
+                        t=50,
+                        pad=10
+                        ),
+        scrollZoom = True,   
         xaxis=dict(
             rangeselector=dict(
                 buttons=list([
@@ -760,7 +773,42 @@ def trend_figure(modules_dd):
     fig = dict(data=data, layout=layout)
     return fig
 
+@app.callback(Output('cate_plot', 'figure'),
+              [Input('slider_hour', 'value')])
+def generate_parallel_cord_plots(slider_hour):
 
+    new = filter_data(hist_data, 'All', 'All', slider_hour)
+
+    grouped = new.groupby(['Version', 'CPU', 'System'])['Downloads'].sum().reset_index(name='Sum')
+
+    data = [go.Parcats(
+    dimensions=[
+        {'label': 'System',
+         'values': list(grouped['System'])},
+        {'label': 'CPU',
+         'values': list(grouped['CPU'])},
+        {'label': 'Version',
+         'values': list(grouped['Version'])}],
+    counts= list(grouped['Sum']),
+    line = {'shape' : 'hspline',
+            'color': '#1a9850'}
+            #'colorscale': 'Rainbow'},
+    
+    )]
+
+    layout = go.Layout(
+                height = 350,
+                uirevision= 'temp',
+                title = 'Distribution of System/CPU/Version',
+                margin =go.layout.Margin(
+                            l=15,
+                            r=15,
+                            b=35,
+                            t=80,
+                            pad=10
+                            ))
+    fig = dict(data = data, layout = layout)
+    return fig
 
 if __name__ == '__main__':
     
