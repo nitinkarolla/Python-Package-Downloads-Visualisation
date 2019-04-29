@@ -14,8 +14,6 @@ import squarify
 
 from datetime import datetime as dt
     
-
-
 ###################################
 ########Loading the data
 ###################################
@@ -64,15 +62,15 @@ main =  html.Div([
         html.Div([html.Br(),
             html.Div([
             html.Div(id = 'count_download', 
-                style = {'width' : '29%', 'height': '90','backgroundColor' : '#5108af', 'marginLeft' : '2%' ,
+                style = {'width' : '29%', 'height': '90','backgroundColor' : '#00ACC1', 'marginLeft' : '2%' ,
                 'boxShadow': '3px 3px 3px 3px #d1d1d1'}, className = 'column'),
 
             html.Div(id = 'rate_download', 
-                style = {'width' : '29%',  'height': '90','backgroundColor' : '#0bbf4d',
+                style = {'width' : '29%',  'height': '90','backgroundColor' : '#00ACC1',
                 'boxShadow': '3px 3px 3px 3px #d1d1d1'}, className = 'column'),
 
             html.Div(id = 'uniq_package'
-                , style = {'width' : '29%', 'height': '90','backgroundColor' : '#edc423',
+                , style = {'width' : '29%', 'height': '90','backgroundColor' : '#00ACC1',
                 'boxShadow': '3px 3px 3px 3px #d1d1d1'}, className = 'column'),
             ], id = '3 boxes')
             ], style = {'height' : '140px'}),
@@ -184,35 +182,6 @@ historical = html.Div([
 ],className = 'Hist-Tab', style = {"backgroundColor":'#f2f2f2', "paddingBottom":'7%'})
 
 
-##################################
-#### TAB3 ######
-##################################
-trends = html.Div('trends')
-
-
-
-
-
-
-
-##################################
-#### TAB4 ######
-##################################
-ref = html.Div('references')
-
-
-
-
-
-
-
-##################################
-#### TAB5 ######
-##################################
-aboutus = html.Div('about us')
-
-
-
 
 ##################################
 ## No Page Error
@@ -248,8 +217,8 @@ app.layout = html.Div([
         dcc.Tab(label='Live Data', value='main', style=tab_style, selected_style=tab_selected_style),
         dcc.Tab(label='Historical Data', value='historical', style=tab_style, selected_style=tab_selected_style),
         #dcc.Tab(label='Interesting Trends', value='trends', style=tab_style, selected_style=tab_selected_style),
-        dcc.Tab(label='References', value='ref', style=tab_style, selected_style=tab_selected_style),
-        dcc.Tab(label='Team', value='aboutus', style=tab_style, selected_style=tab_selected_style),
+        #dcc.Tab(label='References', value='ref', style=tab_style, selected_style=tab_selected_style),
+        #dcc.Tab(label='Team', value='aboutus', style=tab_style, selected_style=tab_selected_style),
     ], style=tabs_styles),
     html.Div(id='tabs-content-inline')
 ], style = {'width': '90%','marginLeft':'5%', 'boxShadow': '3px 3px 3px 3px #d1d1d1'})
@@ -265,12 +234,6 @@ def render_content(tab):
         return main
     elif tab == 'historical':
         return historical
-    elif tab == 'trends':
-        return trends
-    elif tab == 'ref':
-        return ref
-    elif tab == 'aboutus':
-        return aboutus
     else:
         return noPage
 
@@ -359,12 +322,13 @@ def update_map(n):
                 locations = new['3let'],
                 z = new['size'],
                 text = new['Countrylet'],
-                colorscale = [[0.0, 'rgb(165,0,38)'], [1/10000000, 'rgb(215,48,39)'], [1/10000, 'rgb(244,109,67)'],
-                            [1/1000, 'rgb(253,174,97)'], [1/100, 'rgb(254,224,144)'], [1/25, 'rgb(224,243,248)'],
-                            [1/10, 'rgb(171,217,233)'],[1/5, 'rgb(116,173,209)'], [1/2, 'rgb(69,117,180)'],
-                            [1, 'rgb(49,54,149)']],
+                # colorscale = [[0.0, 'rgb(165,0,38)'], [1/10000000, 'rgb(215,48,39)'], [1/10000, 'rgb(244,109,67)'],
+                #             [1/1000, 'rgb(253,174,97)'], [1/100, 'rgb(254,224,144)'], [1/25, 'rgb(224,243,248)'],
+                #             [1/10, 'rgb(171,217,233)'],[1/5, 'rgb(116,173,209)'], [1/2, 'rgb(69,117,180)'],
+                #             [1, 'rgb(49,54,149)']],
+                colorscale = 'Viridis',
                 autocolorscale = False,
-                reversescale = False,
+                reversescale = True,
                 
                 marker = go.choropleth.Marker(
                     line = go.choropleth.marker.Line(
@@ -428,9 +392,9 @@ def update_map2(n):
                 locations = new['3let'],
                 z = new['size'],
                 text = new['Countrylet'],
-                colorscale = 'Rainbow',
+                colorscale = 'Viridis',
                 autocolorscale = False,
-                reversescale = False,
+                reversescale = True,
                 
                 marker = go.choropleth.Marker(
                     line = go.choropleth.marker.Line(
@@ -553,9 +517,11 @@ def gen_tree_maps(n):
     rects = squarify.squarify(normed, x, y, width, height)
 
     # Choose colors from http://colorbrewer2.org/ under "Export"
-    color_brewer = ['rgb(158,1,66)','rgb(213,62,79)','rgb(244,109,67)',
-                    'rgb(253,174,97)','rgb(254,224,139)','rgb(230,245,152)',
-                    'rgb(171,221,164)','rgb(102,194,165)','rgb(50,136,189)','rgb(94,79,162)']
+    # color_brewer = ['rgb(158,1,66)','rgb(213,62,79)','rgb(244,109,67)',
+    #                 'rgb(253,174,97)','rgb(254,224,139)','rgb(230,245,152)',
+    #                 'rgb(171,221,164)','rgb(102,194,165)','rgb(50,136,189)','rgb(94,79,162)']
+    color_brewer = ['#40c2d1','#53c8d6','#66ceda','#79d4df','#8cdae3','#a0e1e8','#b3e7ed','#c6edf1','#d9f3f6','#ecf9fa']
+
     shapes = []
     annotations = []
     counter = 0
@@ -662,8 +628,9 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
             locations = new['3let'],
             z = new['size'],
             text = new['Countrylet'],
-            colorscale = [[0,'rgb(255,255,217)'],[1e-10, 'rgb(237,248,177)'],[1e-9 ,'rgb(199,233,180)'],[ 1e-8,'rgb(127,205,187)']
-                        ,[1e-7,'rgb(65,182,196)'],[1e-6, 'rgb(29,145,192)'],[1e-5,'rgb(34,94,168)'],[ 1,'rgb(12,44,132)']],
+            # colorscale = [[0,'rgb(255,255,217)'],[1e-10, 'rgb(237,248,177)'],[1e-9 ,'rgb(199,233,180)'],[ 1e-8,'rgb(127,205,187)']
+                        # ,[1e-7,'rgb(65,182,196)'],[1e-6, 'rgb(29,145,192)'],[1e-5,'rgb(34,94,168)'],[ 1,'rgb(12,44,132)']],
+            colorscale = 'YlGnBu',
             autocolorscale = False,
             reversescale = False,
             
@@ -809,6 +776,7 @@ def generate_parallel_cord_plots(slider_hour):
                             ))
     fig = dict(data = data, layout = layout)
     return fig
+    
 
 if __name__ == '__main__':
     
