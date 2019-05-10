@@ -103,9 +103,7 @@ main =  html.Div([
                             html.Div(dcc.Graph(id = 'treemaps'))] 
                 ,style = {'width': '45%', 'marginLeft':'3%', #'border': '1px solid #9b9b9b',  
                                 'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column')
-        ], className = 'row')
-
-            
+        ], className = 'row')         
             
 ], id="mainDiv", style = {"backgroundColor":'#f2f2f2', "paddingBottom":'7%'})
 
@@ -116,8 +114,10 @@ main =  html.Div([
 ##################################
 
 ###Reading the data for TAB2
-hist_data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/data/summ.csv")
-
+#hist_data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/data/summ.csv")
+hist_data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/data/data_g4.csv")
+sankey_data = pd.read_csv("E:/Semester-2/DIVA/Project/Development/data/sankey_data.csv")
+hist_data['Date'] = hist_data['Date'].astype('datetime64[ns]')
 
 historical = html.Div([
     #html.Br(),
@@ -127,59 +127,81 @@ historical = html.Div([
         html.Div(
             [html.P('Select the Date Range:'),
             dcc.DatePickerRange(
-            id='my-date-picker-range',
-            min_date_allowed=dt(2019, 1, 1),
-            max_date_allowed=dt(2019, 3, 24),
-            initial_visible_month=dt(2019, 3, 20)
+            id='date_pick',
+            min_date_allowed=dt(2018, 4, 15),
+            max_date_allowed=dt(2019, 3, 14),
+            #initial_visible_month=dt(2019, 2, 20),
+            start_date = dt(2019,1,1),
+            end_date = dt(2019,1,30)
             #end_date=dt(2019, 3, 24)
-            )], style = {'width' : '25%', 'marginLeft' : '8%'}, className = 'column'        
+            )], style = {'width' : '30%', 'marginLeft' : '20%'}, className = 'column'        
         ), 
         html.Div([html.P('Select the Packages:', style = {'paddingBottom' : '8px' }),
             dcc.Dropdown(
                 id = 'modules_dd',
-                options=[{'label': 'All', 'value': 'All'}]+ [{'label': i, 'value': i} for i in hist_data.Module.unique()],
+                options=[{'label': 'All', 'value': 'All'}]+ [{'label': i, 'value': i} for i in hist_data.project.unique()],
                 value=['All'],
                 multi=True,
                 searchable = True
-            )], style = {'width' : '25%', 'marginLeft' : '2%', 'display': 'inline-block'}, className = 'column'        
-        ),
-        html.Div([html.P('Select the Systems:', style = {'paddingBottom' : '8px' }),
-            dcc.Dropdown(
-                id = 'systems_dd',
-                options=[{'label': 'All', 'value': 'All'}]+ [{'label': i, 'value': i} for i in hist_data.System.unique()],
-                value=['All'],
-                multi=True,
-                searchable = True
-            )], style = {'width' : '25%', 'marginLeft' : '5%', 'display': 'inline-block'}, className = 'column'        
+            )], style = {'width' : '30%', 'marginLeft' : '5%', 'display': 'inline-block'}, className = 'column'        
         )
     ] , className = 'row'
     ),
     html.Br(),
     html.Div([
-        html.P("Select the hour of the day:"),
-        html.Div(dcc.Slider(id='slider_hour',
-            marks={i: '{}'.format (str(i)+ ': 00') for i in range(24)},
-            min = -1,
-            max=23,
-            value=-1,
-            step=1,
-            updatemode='drag' )         
-        , className = 'column')],
-    className = 'row', style = {'marginLeft': '8%', 'width': '75%'}),
-    html.Br(),
-    html.Div([
-        html.Div(dcc.Graph(id = 'tab2_map'), style = {'width': '55%', # 'border': '1px solid #9b9b9b',  
+        html.Div(dcc.Graph(id = 'tab2_map'), style = {'width': '60%', # 'border': '1px solid #9b9b9b',  
                                     'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column'),
 
-        html.Div(dcc.Graph(id = 'cate_plot'), style = {'width': '40%', # 'border': '1px solid #9b9b9b',  
+        html.Div(dcc.Graph(id = 'top5_bar_plot'), style = {'width': '35%', # 'border': '1px solid #9b9b9b',  
                                     'boxShadow': '3px 3px 3px 3px #d1d1d1' }, className = 'column')
     
     ], style = {'margin': '3%'}, className = 'row'),
 
-    html.Div(dcc.Graph(id = 'trend_line'), style = {'width': '60%', 'marginLeft': '20%', #'border': '1px solid #9b9b9b',  
-                                    'boxShadow': '3px 3px 3px 3px #d1d1d1' })
+    html.Br(),
+    
+    html.Div(
+        dcc.Graph(id = 'scatterplot', style ={'marginLeft': '25%', 'width' : '50%', 'boxShadow': '3px 3px 3px 3px #d1d1d1' } )
+    )
+    # html.Div(dcc.Graph(id = 'scatterplot'))
     
 ],className = 'Hist-Tab', style = {"backgroundColor":'#f2f2f2', "paddingBottom":'7%'})
+
+
+##################################
+## TAB3 - Trends
+##################################
+
+trends = html.Div([
+        html.Br(),
+        html.Br(),
+        html.Div([
+        html.Div([
+            html.P('Select the Metric:', style = {'paddingBottom' : '8px' }),
+            dcc.RadioItems(id = 'radio', 
+                options=[
+                    {'label': 'Actual', 'value': 'ACT'},
+                    {'label': '10 Day Moving Average', 'value': '10D'},
+                    {'label': '20 Day Moving Average', 'value': '20D'},
+                    {'label': '30 Day Moving Average', 'value': '30D'}
+                ], value = 'ACT'
+            )],style = {'width' : '25%', 'marginLeft' : '20%', 'display': 'inline-block'}, className = 'columns'),
+        html.Div([
+            html.P('Select the Packages:', style = {'paddingBottom' : '8px' }),
+            dcc.Dropdown(
+                id = 'modules_trend',
+                options=[{'label': 'All', 'value': 'All'}]+ [{'label': i, 'value': i} for i in hist_data.project.unique()],
+                value=['All'],
+                multi=True,
+                searchable = True
+            )], style = {'width' : '30%', 'marginLeft' : '5%', 'display': 'inline-block'}, className = 'column'        
+        ), ], className= 'row'),
+        html.Br(),
+        html.Br(),
+        html.Div(
+            dcc.Graph(id = 'trend_line', style = {'width': '80%', 'marginLeft': '10%', #'border': '1px solid #9b9b9b',  
+                                    'boxShadow': '3px 3px 3px 3px #d1d1d1' }), className = 'row')
+        
+        ],className = 'trendTab', style = {"backgroundColor":'#f2f2f2', "paddingBottom":'7%'})
 
 
 
@@ -215,9 +237,9 @@ app.layout = html.Div([
     
     dcc.Tabs(id="tabs-styled-with-inline", value='main', children=[
         dcc.Tab(label='Live Data', value='main', style=tab_style, selected_style=tab_selected_style),
-        dcc.Tab(label='Historical Data', value='historical', style=tab_style, selected_style=tab_selected_style),
-        #dcc.Tab(label='Interesting Trends', value='trends', style=tab_style, selected_style=tab_selected_style),
-        #dcc.Tab(label='References', value='ref', style=tab_style, selected_style=tab_selected_style),
+        dcc.Tab(label='Country Level', value='historical', style=tab_style, selected_style=tab_selected_style),
+        dcc.Tab(label='Package Trends', value='trends', style=tab_style, selected_style=tab_selected_style),
+#        dcc.Tab(label='Others', value='others', style=tab_style, selected_style=tab_selected_style),
         #dcc.Tab(label='Team', value='aboutus', style=tab_style, selected_style=tab_selected_style),
     ], style=tabs_styles),
     html.Div(id='tabs-content-inline')
@@ -234,6 +256,10 @@ def render_content(tab):
         return main
     elif tab == 'historical':
         return historical
+    elif tab == 'trends':
+        return trends
+    elif tab == 'others':
+        return noPage
     else:
         return noPage
 
@@ -251,6 +277,11 @@ time5 = start_time
 time6 = start_time
 time7 = start_time
 downloads = 0
+
+colorscale_map = [[0.0, 'rgb(247,252,240)'], [1/10000000, 'rgb(224,243,219)'], [1/10000, 'rgb(204,235,197)'],
+                             [1/1000, 'rgb(168,221,181)'], [1/100, 'rgb(123,204,196)'], [1/25, 'rgb(78,179,211)'],
+                             [1/10, 'rgb(43,140,190)'],[1/3, 'rgb(8,104,172)'], [1, 'rgb(8,64,129)'],
+                             [1, 'rgb(49,54,149)']]
 
 @app.callback(Output('count_download', 'children'),
               [Input('interval-component', 'n_intervals')])
@@ -326,9 +357,9 @@ def update_map(n):
                 #             [1/1000, 'rgb(253,174,97)'], [1/100, 'rgb(254,224,144)'], [1/25, 'rgb(224,243,248)'],
                 #             [1/10, 'rgb(171,217,233)'],[1/5, 'rgb(116,173,209)'], [1/2, 'rgb(69,117,180)'],
                 #             [1, 'rgb(49,54,149)']],
-                colorscale = 'Viridis',
+                colorscale = colorscale_map,
                 autocolorscale = False,
-                reversescale = True,
+                reversescale = False,
                 
                 marker = go.choropleth.Marker(
                     line = go.choropleth.marker.Line(
@@ -392,9 +423,9 @@ def update_map2(n):
                 locations = new['3let'],
                 z = new['size'],
                 text = new['Countrylet'],
-                colorscale = 'Viridis',
+                colorscale = colorscale_map,
                 autocolorscale = False,
-                reversescale = True,
+                reversescale = False,
                 
                 marker = go.choropleth.Marker(
                     line = go.choropleth.marker.Line(
@@ -587,42 +618,39 @@ def gen_tree_maps(n):
 ################################### TAB2 #################
 ############################################################################################################
 
-module_all = list(hist_data.Module.unique())
-hour_all = list(hist_data.Hour.unique())
-system_all = list(hist_data.System.unique())
+module_all = list(hist_data.project.unique())
+
 
 # Helper functions
-def filter_data(df, modules, system, hour):
+def filter_data(df, modules, date_start, date_end):
+    start_date = dt.strptime(date_start, '%Y-%m-%d')
+    end_date = dt.strptime(date_end, '%Y-%m-%d')
     if 'All' in modules:
         modules = module_all
-    if 'All' in system:
-        system = system_all
-    if hour == -1:
-        dff = df[df['System'].isin(system)
-                & df['Module'].isin(modules)
-                ]
-    else :
-        dff = df[df['Module'].isin(modules)
-                 & df['System'].isin(system) &
-                 (df['Hour'] == hour)
-                ]
+    dff = df[(df['project'].isin(modules)) & (df['Date'] >= start_date) &  (df['Date'] <= end_date)]
     return dff
 
+colorscale_map = [[0.0, 'rgb(247,252,240)'], [1/10000000, 'rgb(224,243,219)'], [1/10000, 'rgb(204,235,197)'],
+                             [1/1000, 'rgb(168,221,181)'], [1/100, 'rgb(123,204,196)'], [1/25, 'rgb(78,179,211)'],
+                             [1/10, 'rgb(43,140,190)'],[1/3, 'rgb(8,104,172)'], [1, 'rgb(8,64,129)'],
+                             [1, 'rgb(49,54,149)']]
+# ['rgb(247,252,240)','rgb(224,243,219)','rgb(204,235,197)','rgb(168,221,181)','rgb(123,204,196)','rgb(78,179,211)','rgb(43,140,190)','rgb(8,104,172)','rgb(8,64,129)']
 
 # Selectors -> main graph
 @app.callback(Output('tab2_map', 'figure'),
               [Input('modules_dd', 'value'),
-               Input('slider_hour', 'value'),
-               Input('systems_dd', 'value')])
+               Input('date_pick', 'start_date'),
+               Input('date_pick', 'end_date')])
               #[State('lock_selector', 'values'),
               #State('main_graph', 'relayoutData')])
 
-def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
+def make_main_figure(modules_dd, start_date, end_date): #, year_slider,
                      #selector, main_graph_layout):
+    global df_map
 
-    dff = filter_data(hist_data, modules_dd, systems_dd, slider_hour)
+    df_map = filter_data(hist_data, modules_dd, start_date, end_date)
 
-    new = dff.groupby(['Countrylet', '3let'])['Downloads'].sum().reset_index(name= 'size')
+    new = df_map.groupby(['Countrylet', '3let'])['num_downloads'].sum().reset_index(name= 'size')
 
     data =  [go.Choropleth(
             locations = new['3let'],
@@ -630,7 +658,7 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
             text = new['Countrylet'],
             # colorscale = [[0,'rgb(255,255,217)'],[1e-10, 'rgb(237,248,177)'],[1e-9 ,'rgb(199,233,180)'],[ 1e-8,'rgb(127,205,187)']
                         # ,[1e-7,'rgb(65,182,196)'],[1e-6, 'rgb(29,145,192)'],[1e-5,'rgb(34,94,168)'],[ 1,'rgb(12,44,132)']],
-            colorscale = 'YlGnBu',
+            colorscale = colorscale_map,
             autocolorscale = False,
             reversescale = False,
             
@@ -646,12 +674,12 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
                 len= 0.6),
             )]
     layout = go.Layout(
-            height = 350,
+            height = 450,
             margin =go.layout.Margin(
                         l=10,
                         r=0,
-                        b=0,
-                        t=0,
+                        b=5,
+                        t=50,
                         pad=4
                         ),
             
@@ -662,6 +690,9 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
                 projection = go.layout.geo.Projection(
                     type = 'equirectangular'
                 )
+            ),
+            title = go.layout.Title(
+                text = 'Total Downloads across Countries'
             ),
             uirevision= 'temp',
             xaxis = go.layout.XAxis(fixedrange= False),
@@ -678,27 +709,136 @@ def make_main_figure(modules_dd, slider_hour, systems_dd): #, year_slider,
     figure = dict(data=data, layout=layout)
     return figure
 
-trend_data = pd.read_csv("trend.csv")
 
+@app.callback(Output('top5_bar_plot', 'figure'),
+              [Input('tab2_map', 'hoverData')])
+def top5PackByCountry(country):
+    data_g4 = df_map.groupby(['country_code','project'])['num_downloads'].sum().reset_index()
+    # extract 2let country code
+    country = country['points'][0]['text']
+    tmp_country = dfcountry[dfcountry['Countrylet']==country]
+    country = tmp_country['2let'].values[0]
+
+    title = "Top Package Downloads - " + str(country)
+    ####################
+    tmp_df = data_g4[data_g4['country_code']==country]
+    tmp_df = tmp_df.sort_values(by=['num_downloads'], ascending=False)
+    X = tmp_df['project'].head(5)
+    Y = tmp_df['num_downloads'].head(5)
+    trace0 = go.Bar(
+        x = list(X),
+        y = list(Y),
+        marker=dict(
+            color= ['rgb(8,81,156)', 'rgb(49,130,189)','rgb(107,174,214)','rgb(189,215,231)','rgb(239,243,255)']),
+    )
+
+    data = [trace0]
+    layout = go.Layout(
+        title= title,
+        height = 450,
+        margin =go.layout.Margin(
+                        l=50,
+                        r=50,
+                        b=30,
+                        t=50,
+                        pad=4
+                        )
+    )
+
+    fig = dict(data = data, layout = layout)
+    return fig
+
+@app.callback(Output('scatterplot', 'figure'),
+              [Input('modules_dd', 'value'),
+               Input('date_pick', 'start_date'),
+               Input('date_pick', 'end_date')])
+def scatterplot(modules_dd, start_date, end_date):
+    if 'All' in modules_dd:
+        modules_dd = module_all
+    current_module = modules_dd[0:2]
+    df_scatter = filter_data(hist_data, current_module, start_date, end_date)
+    df_temp = df_scatter[df_scatter['project'].isin(current_module)]
+    df_temp = df_temp.groupby(['Countrylet', 'project'])['num_downloads'].sum().reset_index(name= 'size')
+    df_temp = df_temp.pivot(index = 'Countrylet', columns= 'project', values= 'size')
+    df_temp['Country'] = df_temp.index
+    df_temp.fillna(0)
+    #print(df_temp)
+    data = [go.Scatter(
+                    x=df_temp[df_temp['Country'] == i][current_module[0]],
+                    y=df_temp[df_temp['Country'] == i][current_module[1]],
+                    text=df_temp[df_temp['Country'] == i]['Country'],
+                    mode='markers',
+                    opacity=0.7,
+                    marker={
+                        'size': 10,
+                        'line': {'width': 0.5, 'color': 'white'}
+                    },
+                    name=i
+                ) for i in df_temp.Country.unique()
+
+    ]
+
+    
+    layout = go.Layout(
+        title= "Comparison of 2 Packages across Countries",
+        height = 450,
+        xaxis={'title': "Downloads " + current_module[0]},
+        yaxis={'title': "Downloads " + current_module[1]},
+        hovermode='closest',
+        margin =go.layout.Margin(
+                        l=50,
+                        r=50,
+                        b=30,
+                        t=80,
+                        pad=4
+                        )
+    )
+    fig = dict(data = data, layout = layout)
+    return fig
+    
+
+
+
+
+############################################################################################################
+################################### TAB3 #################
+############################################################################################################
+
+
+trend_data = pd.read_csv("data/trend.csv")
+trend_data['day']= pd.to_datetime(trend_data.day)
+module_all_trend = trend_data['pack_name'].unique()
 color_col = ['rgb(158,1,66)','rgb(213,62,79)','rgb(244,109,67)','rgb(253,174,97)','rgb(254,224,139)',
 'rgb(230,245,152)','rgb(171,221,164)','rgb(102,194,165)','rgb(50,136,189)','rgb(94,79,162)']
 # Selectors -> main graph
 @app.callback(Output('trend_line', 'figure'),
-              [Input('modules_dd', 'value')])
+              [Input('modules_trend', 'value'),
+              Input('radio', 'value')])
                #Input('slider_hour', 'value'),
                #Input('systems_dd', 'value')])
               #[State('lock_selector', 'values'),
               #State('main_graph', 'relayoutData')])
 
-def trend_figure(modules_dd):
-    if 'All' in modules_dd:
-        modules_dd =  module_all   
+def trend_figure(modules_trend, radio):
+    if 'All' in modules_trend:
+        modules_trend =  module_all_trend
+
+
+    if radio == 'ACT':
+        y = 'num_downloads'
+    elif radio == '10D':
+        y = 'avg10'
+    elif radio == '20D':
+        y= 'avg20'
+    elif radio == '30D':
+        y = 'avg30'
+
     data = []
-    for i in range(len(modules_dd)):
+    for i in range(len(modules_trend)):
         trace = go.Scatter(
-        x=trend_data['date'][trend_data['module'] == modules_dd[i]],
-        y=trend_data['count'][trend_data['module'] == modules_dd[i]] ,
-        name = modules_dd[i],
+        x=trend_data['day'][trend_data['pack_name'] == modules_trend[i]],
+        y=trend_data[y][trend_data['pack_name'] == modules_trend[i]] ,
+        name = modules_trend[i],
         #line = dict(color = color_col[i % 10]),
         line = dict(color = color_col[i % 10]),
         opacity = 0.8)
@@ -707,7 +847,7 @@ def trend_figure(modules_dd):
     
     layout = dict(
         title='Trend Analyses of Packages',
-        height = 350,
+        height = 500,
             margin =go.layout.Margin(
                         l=50,
                         r=20,
@@ -738,43 +878,6 @@ def trend_figure(modules_dd):
     )
 
     fig = dict(data=data, layout=layout)
-    return fig
-
-@app.callback(Output('cate_plot', 'figure'),
-              [Input('slider_hour', 'value')])
-def generate_parallel_cord_plots(slider_hour):
-
-    new = filter_data(hist_data, 'All', 'All', slider_hour)
-
-    grouped = new.groupby(['Version', 'CPU', 'System'])['Downloads'].sum().reset_index(name='Sum')
-
-    data = [go.Parcats(
-    dimensions=[
-        {'label': 'System',
-         'values': list(grouped['System'])},
-        {'label': 'CPU',
-         'values': list(grouped['CPU'])},
-        {'label': 'Version',
-         'values': list(grouped['Version'])}],
-    counts= list(grouped['Sum']),
-    line = {'shape' : 'hspline',
-            'color': '#1a9850'}
-            #'colorscale': 'Rainbow'},
-    
-    )]
-
-    layout = go.Layout(
-                height = 350,
-                uirevision= 'temp',
-                title = 'Distribution of System/CPU/Version',
-                margin =go.layout.Margin(
-                            l=15,
-                            r=15,
-                            b=35,
-                            t=80,
-                            pad=10
-                            ))
-    fig = dict(data = data, layout = layout)
     return fig
     
 
