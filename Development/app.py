@@ -18,7 +18,7 @@ from datetime import datetime as dt
 ########Loading the data
 ###################################
 
-data = pd.read_csv("sample_data.csv")
+data = pd.read_csv("data/sample_data.csv")
 data['module'] = data['file'].apply(lambda x : ast.literal_eval(x)['project'])
 data['timestamp'] = pd.to_datetime(data.timestamp)
 dfcountry = pd.read_csv('countryMap.txt',sep='\t')
